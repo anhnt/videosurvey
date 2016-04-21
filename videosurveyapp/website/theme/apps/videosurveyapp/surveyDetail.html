@@ -1,0 +1,239 @@
+<html>
+    #parse("/theme/masterTemplate.html")
+    <head>
+        #@themeHeader( "Survey Detail" )
+        <script src="/static/reload-fragment/1.0.2/jquery.reload-fragment-1.0.2.js" >//</script>
+        <script type="text/javascript" src="/static/uri/1.15.1/URI.js">//</script>
+        <script src="/static/moment/2.4.0/moment-2.4.0.js">//</script>
+        <script src="/theme/apps/videosurveyapp/countdown.min.js">//</script>
+        <link href="//vjs.zencdn.net/5.8.7/video-js.css" rel="stylesheet">
+        <link href="/theme/apps/videosurveyapp/videojs-record/css/videojs.record.css" rel="stylesheet">
+        <style type="text/css">
+            #ksurvey-wrap{
+                padding-bottom: 20px;
+            }
+            .question-item{
+                margin-bottom: 30px;
+            }
+            #myVideo{
+                background-color: #E8E884;
+                display: inline-block;
+            }
+        </style>
+        #end
+    </head>
+    <body class="">
+        #@themeBody()
+        #end
+        <div class="container">
+            #set($survey = $page.attributes.survey)
+            #set($accessGroups = $survey.jsonObject.groups.split(','))
+            #set($canAccessSurvey = false)
+            #foreach($groupName in $accessGroups)
+                #if(!$canAccessSurvey)
+                #set($canAccessSurvey = $userResource.isInGroup($groupName, $page.organisation.orgId))
+                #end
+            #end
+
+            #set ($taken = $controllers.call('getSurveyResultByUser', $page, $user.name, $survey.name))
+            #if($survey.jsonObject.endTime && $survey.jsonObject.startTime)
+                #set($expired = $formatter.now.compareTo($formatter.toDate($survey.jsonObject.endTime)))
+                #set($openingSoon = $formatter.now.compareTo($formatter.toDate($survey.jsonObject.startTime)))
+            #end
+            #if(!$canAccessSurvey)
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-danger">
+                        <h3><strong>Oops!</strong> You don't have permission to access this survey. <a href="/videosurvey">Click here</a> to go back to survey list!</h3>
+                    </div>
+                </div>
+            </div>
+            #elseif($taken.hits.totalHits>0)
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-info">
+                        <h3><strong>Thank you!</strong> You've just done this survey. <a href="/videosurvey">Click here to go back to survey list</a>!</h3>
+                    </div>
+                </div>
+            </div>
+            #elseif (!$survey.jsonObject.status)
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-danger">
+                        <h3><strong>Oops!</strong> This survey is currently disabled by administrator. <a href="/videosurvey">Click here</a> to go back to survey list!</h3>
+                    </div>
+                </div>
+            </div>
+            #elseif($expired && $expired>0)
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-danger">
+                        <h3><strong>Oops!</strong> This survey has expired. <a href="/videosurvey">Click here</a> to go back to survey list!</h3>
+                    </div>
+                </div>
+            </div>
+            #elseif($openingSoon && $openingSoon<0)
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-info">
+                        <h3><strong>Hello!</strong> This survey is opening in <span id="cowndowntime" data-startTime="$survey.jsonObject.startTime">...</span> </h3>
+                    </div>
+                </div>
+            </div>
+            #else
+            <div class="row">
+                <div class="col-sm-12" id="ksurvey-wrap">
+                    
+                    <h3>$survey.jsonObject.name</h3>
+
+                    #if($survey.jsonObject.startTime)
+                    <div><i class="fa fa-clock-o"></i> <span class="surveytime">$survey.jsonObject.startTime</span> - <span class="surveytime">$survey.jsonObject.endTime</span></div>
+                    #end
+                    <p>$survey.jsonObject.description</p>
+                    <hr>
+                    #set($questions = $page.attributes.questionResult.hits.hits)
+                    #set($answers = $page.attributes.answerResult.hits.hits)
+                    #if($page.attributes.questionResult.hits.totalHits > 0)
+                        <form id="surveyform" data-survey="$survey.name" action="/videosurvey/submitSurvey/" method="post">
+                            <input type="hidden" name="temp-surveyId" value="$survey.name">
+                            <input type="hidden" name="temp-user" value="$user.name">
+                            <input type="hidden" name="temp-userAgentHeader" value="$request.userAgentHeader">
+                            <input type="hidden" name="temp-fromAddress" value="$request.fromAddress">
+                            <input type="hidden" name="temp-totalQuestions" value="$page.attributes.questionResult.hits.totalHits">
+
+                            <div id="questions">
+                                #set ($count = 0)
+                                #foreach($question in $questions)
+                                #set ($count = $count + 1)
+                                #set ($answered = $controllers.call('getQuestionResult', $page, $user.name, $survey.name, $question.id))
+
+                                <div class="question-item $formatter.ifTrue($answered, 'hide','')" data-answered="$answered" data-questionId="$question.id">
+                                    <h4>$count. $question.fields.title.value</h4>
+                                    <div class="question-description">$question.fields.body.value</div>
+                                    <div class="answers">
+                                        #if($question.fields.type.value=='PT')
+                                            <!-- Plain text -->
+                                            <div class="form-group">
+                                                <textarea required="required" name="$question.id" class="form-control" placeholder="Please enter your answer here" id="exampleInputFile" ></textarea>
+                                              </div>
+                                        #end
+
+                                        #if($question.fields.type.value=='V')
+                                            <!-- Video -->
+                                            #if(!$answered)
+                                            <a class="btn btn-danger btn-open-recorder" data-questionId="$question.id"><i class="fa fa-video-camera"></i> Record your answer</a>
+                                            #end
+                                        #end
+
+                                        #if($page.attributes.answerResult.hits.totalHits > 0)
+                                            #foreach($answer in $answers)
+                                                #if($answer.fields.questionId.value == $question.id)
+                                                    #if($question.fields.type.value=='MC')
+                                                    <!-- Multichoices -->
+                                                    <div class="checkbox">
+                                                        <label>
+                                                          <input name="$question.id" value="$answer.id" type="checkbox"> $answer.fields.body.value
+                                                        </label>
+                                                    </div>
+                                                    #elseif($question.fields.type.value=='YN')
+                                                    <!-- Yes/No question -->
+                                                    <div class="radio">
+                                                        <label>
+                                                          <input required="required" name="$question.id" value="$answer.id" type="radio"> $answer.fields.body.value
+                                                        </label>
+                                                    </div>
+                                                    #elseif($question.fields.type.value=='SC')
+                                                    <!-- Single choice question -->
+
+                                                        #if($question.fields.answerLayout.value=="0")
+                                                        <div class="radio">
+                                                            <label>
+                                                                <input name="$question.id" value="$answer.id" type="radio"> $answer.fields.body.value
+                                                            </label>
+                                                        </div>
+                                                        #else
+                                                        <div class="radio-inline">
+                                                            <label>
+                                                                <input name="$question.id" value="$answer.id" type="radio"> $answer.fields.body.value
+                                                            </label>
+                                                        </div>
+                                                        #end
+                                                    #end
+                                                #end
+                                            #end
+                                        #end
+                                        #if($question.fields.type.value=='MC')
+                                        <!-- Multichoices -->
+                                        <input required="required" type="text" style="width:1px; height: 1px;opacity:0.01" name="temp-$question.id" value="">
+                                        #end
+                                    </div>
+                            </div>
+                            #end
+                                <nav id="question-pagination">
+                                    <ul class="pagination">
+                                        <li>
+                                            <a href="#" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                        #set ($count = 0)
+                                        #foreach($question in $questions)
+                                        #set ($count = $count + 1)
+                                        <li class="page-item" data-questionId="$question.id"><a href="#">$count</a></li>
+                                        #end
+                                        <li>
+                                            <a href="#" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                        </div>
+                        <div class="submit-alert alert alert-info hide"><h3><i class="fa fa-check"></i> You've done this survey. Please click submit button to continue</h3></div>
+                        <div class="text-right"><button type="submit" id="btn-submit-survey" class="btn btn-primary hide">Submit</button></div>
+                        </form>
+                    #else
+                    <p>No question found</p>
+                    #end
+                </div>
+            </div>
+            #end
+        </div>
+
+        <div id="modal-recorder" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Record your answer</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        <video id="myVideo" class="video-js vjs-default-skin"></video>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary btn-submit-video">Submit</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <script src="//vjs.zencdn.net/5.8.7/video.min.js">//</script>
+        <script src="/theme/apps/videosurveyapp/RecordRTC.js">//</script>
+        <script src="/theme/apps/videosurveyapp/videojs-record/js/videojs.record.js">//</script>
+        <script type="text/javascript" src="/static/jquery.forms/1.1.0/jquery.forms-1.1.0.js">//</script>
+        <script type="text/javascript" src="/theme/apps/videosurveyapp/ksurvey.js">//</script>
+        <script type="text/javascript">
+            $(function(){
+                var countdownT = setInterval(function(){
+                    if(!$('#cowndowntime').length){
+                        clearInterval(countdownT);
+                        return;
+                    }
+                    var startTime = $('#cowndowntime').attr('data-startTime');
+                    $('#cowndowntime').text(countdown(new Date(startTime)).toString());
+                },1000)
+            })
+        </script>
+    </body>
+</html>

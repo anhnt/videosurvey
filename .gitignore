@@ -1,0 +1,7 @@
+.idea
+/*.db
+*.iml
+run-local.bat
+run-prod.bat
+.mil
+.spliffy

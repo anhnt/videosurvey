@@ -1,0 +1,20 @@
+<controllers onAppEnabled="initApp">
+    <source>/APP-INF/app.js</source>
+    <source>/APP-INF/mapping.js</source>
+    <source>/APP-INF/ua-parser.min.js</source>
+    <source>/APP-INF/utils.js</source>
+    <source>/APP-INF/dbUtils.js</source>
+    <source>/APP-INF/fileManager.js</source>
+    <source>/APP-INF/adminSurveyManager.js</source>
+    <source>/APP-INF/websiteSurveyApp.js</source>
+    <menu parentId="menuRoot" id="menuManageVideoSurvey" text="Video Survey" css="fa fa-video-camera" path="/videosurvey" ordering="90"/>
+    <menu type="website" parentId="menuRoot" id="menuVideoSurveyApp" text="Video Survey" path="/videosurvey" ordering="90"/>
+    <role class="role">
+        <name>Video Survey</name>
+        <privNames>
+            <string>READ_CONTENT</string>
+        </privNames>
+    </role>
+</controllers>
+            
+            
