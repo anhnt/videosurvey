@@ -116,11 +116,10 @@
                                 <div class="panel-heading"><h3 class="panel-title"><span>$question.fields.title.value</span> <a class="btn btn-link btn-xs btn-delete-question pull-right" href="#"><i class="fa fa-trash"></i></a><a class="btn btn-link btn-xs btn-edit-question pull-right" href="#"><i class="fa fa-edit"></i></a> </h3></div>
                                 <div class="panel-body">
                                     <div class="question-body">$!question.fields.body.value</div>
-
-                                    <p><strong>Question type:</strong> <span class="question-type">$controllers.call('getQuestionType',$question.fields.type.value)</span></p>
+                                    <p style="margin-top: 15px"><strong>Question type:</strong> <span class="question-type">$controllers.call('getQuestionType',$question.fields.type.value)</span></p>
                                     #if($question.fields.type.value=='V')
                                     #set ($maxLength = $question.fields.maxLength.value/60)
-                                    <p><strong>Max length</strong> (mins): $!maxLength</p>
+                                    <p style="margin-top: 15px"><strong>Max length</strong> (mins): $!maxLength</p>
                                     #end
 
                                     #if($question.fields.type.value!='PT' && $question.fields.type.value!='V')

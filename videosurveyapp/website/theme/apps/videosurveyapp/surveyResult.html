@@ -1,7 +1,8 @@
+#set($survey = $page.attributes.survey)
 <html xmlns="http://www.w3.org/1999/xhtml">
     #parse("/theme/masterTemplate.html")
     <head>
-        #@themeHeader( "Survey Result" )
+        #@themeHeader( $survey.jsonObject.name )
         <script src="/static/reload-fragment/1.0.1/jquery.reload-fragment-1.0.1.js" >//</script>
         <script type="text/javascript" src="/static/uri/1.15.1/URI.js">//</script>
         <script src="/static/moment/2.4.0/moment-2.4.0.js">//</script>
@@ -20,7 +21,7 @@
         #@themeBody()
         #end
         <div class="container">
-            #set($survey = $page.attributes.survey)
+
             #set($accessGroups = $survey.jsonObject.groups.split(','))
             #set($canAccessSurvey = false)
             #foreach($groupName in $accessGroups)

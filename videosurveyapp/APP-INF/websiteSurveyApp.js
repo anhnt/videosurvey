@@ -235,26 +235,31 @@ function submitSurveyOnly(page, params) {
         deviceModel = parser.device.model;
         deviceType = parser.device.type;
     }
-    var returnObj = {};
-
-    var newSurveySubmitId = RECORD_TYPES.SUBMIT + '-' + generateRandomText(30);
-    var submitObj = {
-        fromAddress: fromAddress,
-        browserName: browserName,
-        browserVersion: browserVersion,
-        osName: osName,
-        osVersion: osVersion,
-        deviceVendor: deviceVendor,
-        deviceType: deviceType,
-        deviceModel: deviceModel,
-        surveyId: surveyId,
-        userId: userId,
-        createdDate: new Date()
+    // Validate result
+    var totalResult = getTotalSurveyResult(page, surveyId, userId);
+    var returnObj = {
+        status: false
     };
-    var db = getDB(page);
-    db.createNew(newSurveySubmitId, JSON.stringify(submitObj), RECORD_TYPES.SUBMIT);
-    log.info('saveResult done {}', JSON.stringify(submitObj));
-    returnObj.status = true;
+    if(totalResult && totalResult.hits.totalHits >= totalQuestions){
+        var newSurveySubmitId = RECORD_TYPES.SUBMIT + '-' + generateRandomText(30);
+        var submitObj = {
+            fromAddress: fromAddress,
+            browserName: browserName,
+            browserVersion: browserVersion,
+            osName: osName,
+            osVersion: osVersion,
+            deviceVendor: deviceVendor,
+            deviceType: deviceType,
+            deviceModel: deviceModel,
+            surveyId: surveyId,
+            userId: userId,
+            createdDate: new Date()
+        };
+        var db = getDB(page);
+        db.createNew(newSurveySubmitId, JSON.stringify(submitObj), RECORD_TYPES.SUBMIT);
+        log.info('saveResult done {}', JSON.stringify(submitObj));
+        returnObj.status = true;
+    }
 
     return views.jsonObjectView(JSON.stringify(returnObj));
 }

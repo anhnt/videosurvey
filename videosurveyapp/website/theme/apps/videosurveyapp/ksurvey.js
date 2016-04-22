@@ -40,8 +40,8 @@ function initGotoCurrentQuestion() {
     if (questions.length > 0) {
         questions.addClass('hide');
         var questionId = questions.first().attr('data-questionId');
-        questions.first().removeClass('hide');
-        $('#questions').find('.page-item[data-questionId=' + questionId + ']').addClass('active');
+        var index = questions.first().removeClass('hide').index();
+        $('#questions').find('.question-index').text(index+1);
     }
 
 }

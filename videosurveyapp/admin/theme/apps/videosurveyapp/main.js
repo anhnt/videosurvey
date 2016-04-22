@@ -25,6 +25,7 @@ $(function(){
 		e.preventDefault();
         var modalQuestion = $('#modal-question');
         modalQuestion.find('[name=questionType]').trigger('change');
+        modalQuestion.find('[name=questionId]').val('');
         modalQuestion.find('form').trigger('reset');
         modalQuestion.find('[name=questionType]').removeAttr('disabled');
         openFuseModal(modalQuestion);
