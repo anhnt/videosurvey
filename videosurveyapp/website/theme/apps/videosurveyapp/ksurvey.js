@@ -1,4 +1,5 @@
 var playerRecorder;
+
 function initCheckboxes() {
     $('.answers input[type=checkbox]').on('click', function (e) {
         var name = $(this).attr('name');
@@ -36,39 +37,42 @@ function initForm() {
 
 function initGotoCurrentQuestion() {
     var questions = $('#questions').find('.question-item[data-answered=false]');
-    if(questions.length>0){
+    if (questions.length > 0) {
         questions.addClass('hide');
         var questionId = questions.first().attr('data-questionId');
         questions.first().removeClass('hide');
-        $('#questions').find('.page-item[data-questionId='+questionId+']').addClass('active');
+        $('#questions').find('.page-item[data-questionId=' + questionId + ']').addClass('active');
     }
 
 }
 
-function checkSubmitButton(){
-    var done = $('#questions').find('.question-item[data-answered=false]').length<1;
-    if(done){
+function checkSubmitButton() {
+    var done = $('#questions').find('.question-item[data-answered=false]').length < 1;
+    if (done) {
         $('#btn-submit-survey').removeClass('hide');
         $('.submit-alert').removeClass('hide');
         $('#questions').find('#question-pagination').addClass('hide');
     }
 }
 
-function initVideoRecorder() {
-    playerRecorder = videojs("myVideo",
-        {
-            controls: true,
-            width: 540,
-            height: 405,
-            plugins: {
-                record: {
-                    audio: true,
-                    video: true,
-                    maxLength: 15*60,
-                    debug: true
-                }
+function initVideoRecorder(maxLength) {
+    var opt = {
+        controls: true,
+        width: 540,
+        height: 405,
+        plugins: {
+            record: {
+                audio: true,
+                video: true,
+                debug: true
             }
-        });
+        }
+    };
+    if (maxLength) {
+        opt.plugins.record.maxLength = maxLength;
+    }
+    playerRecorder = videojs("myVideo", opt);
+
     // error handling
     playerRecorder.on('deviceError', function () {
         console.log('device error:', playerRecorder.deviceErrorCode);
@@ -89,11 +93,12 @@ function initVideoRecorder() {
     });
 }
 
-function initVideoQuestion(){
-    $(document).on('click', '.btn-open-recorder', function(e){
+function initVideoQuestion() {
+    $(document).on('click', '.btn-open-recorder', function (e) {
         e.preventDefault();
-        if(!playerRecorder){
-            initVideoRecorder();
+        var maxLength = $(this).siblings('[data-maxLength]').attr('data-maxLength');
+        if (!playerRecorder) {
+            initVideoRecorder(maxLength);
         }
         $('#modal-recorder').attr('data-questionId', $(this).attr('data-questionId')).modal();
     });
@@ -104,11 +109,11 @@ function initVideoQuestion(){
         $('#modal-recorder .modal-body').html('<video id="myVideo" class="video-js vjs-default-skin"></video>');
     });
 
-    $('#modal-recorder .btn-submit-video').on('click', function(e){
+    $('#modal-recorder .btn-submit-video').on('click', function (e) {
         e.preventDefault();
         var modal = $('#modal-recorder');
         var questionId = modal.attr('data-questionId');
-        if (playerRecorder && playerRecorder.recordedData){
+        if (playerRecorder && playerRecorder.recordedData) {
             var formData = new FormData();
             formData.append(questionId, playerRecorder.recordedData.video);
             formData.append('questionId', questionId);
@@ -120,10 +125,10 @@ function initVideoQuestion(){
                 data: formData,
                 processData: false,
                 contentType: false
-            }).done(function(resp) {
-                if(resp && resp.status && resp.data){
+            }).done(function (resp) {
+                if (resp && resp.status && resp.data) {
                     $('#questions').reloadFragment({
-                        whenComplete: function(){
+                        whenComplete: function () {
                             initGotoCurrentQuestion();
                             checkSubmitButton();
                         }
@@ -151,7 +156,7 @@ $(function () {
     initForm();
     initTimeago();
     initVideoQuestion();
-    initVideoRecorder();
+    //initVideoRecorder();
     initGotoCurrentQuestion();
     checkSubmitButton();
 });

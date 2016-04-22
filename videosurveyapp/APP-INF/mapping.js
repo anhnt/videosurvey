@@ -71,6 +71,9 @@ var questionMapping = {
         },
         "type": {
             "type": "string"
+        },
+        "maxLength": {
+            "type": "integer"
         }
     }
 };

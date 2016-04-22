@@ -120,6 +120,8 @@
 
                                         #if($question.fields.type.value=='V')
                                             <!-- Video -->
+                                            #set ($maxLength = $question.fields.maxLength.value/60)
+                                            <p data-maxLength="$question.fields.maxLength.value"><strong>Max length</strong> (mins): $!maxLength</p>
                                             #if(!$answered)
                                             <a class="btn btn-danger btn-open-recorder" data-questionId="$question.id"><i class="fa fa-video-camera"></i> Record your answer</a>
                                             #end

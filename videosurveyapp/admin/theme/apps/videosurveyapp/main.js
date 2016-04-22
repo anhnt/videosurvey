@@ -60,6 +60,7 @@ $(function(){
                         modalQuestion.find('[name=questionType]').val(question.type).attr('disabled','disabled');
                         modalQuestion.find('[name=questionBody]').val(question.body);
                         modalQuestion.find('[name=answerLayout]').val(question.answerLayout);
+                        modalQuestion.find('[name=maxLength]').val(question.maxLength/60);
                         if(question.type=="SC"){
                             modalQuestion.find('.answerLayout').removeClass('hide');
                         }else{
@@ -560,7 +561,6 @@ $(function(){
 
     function buildJWVideoPlayerPreview(src) {
         var playerInstance = jwplayer('answer-preview');
-        var posterHref = src + '/alt-640-360.png';
 
         playerInstance.setup({
             autostart: false,
@@ -572,15 +572,14 @@ $(function(){
             width: "100%",
             androidhls: true, //enable hls on android 4.1+
             playlist: [{
-                image: posterHref,
                 sources: [{
                     file: src
                 }
-                    , {
-                        file: src + "/../alt-640-360.webm"
-                    }, {
-                        file: src + "/../alt-640-360.m4v"
-                    }]
+                , {
+                    file: src + "/../alt-640-360.webm"
+                }, {
+                    file: src + "/../alt-640-360.m4v"
+                }]
             }]
             , primary: "flash"
         });
@@ -595,5 +594,7 @@ $(function(){
     initTimeago();
     initHistogram();
     initClearResult();
-    initVideoPreview();
+    if($('#surveyManager').length){
+        initVideoPreview();
+    }
 });

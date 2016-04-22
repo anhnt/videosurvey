@@ -260,6 +260,7 @@ function saveQuestion(page, params){
     var surveyId = params.surveyId;
     var questionTitle = params.questionTitle;
     var questionType = params.questionType;
+    var maxLength = params.maxLength || 3;
     var answerLayout = params.answerLayout || 0; // o means vertical
     var questionBody = params.questionBody || '';
     var user = params.createdBy;
@@ -280,6 +281,7 @@ function saveQuestion(page, params){
                 question.body = questionBody;
                 question.answerLayout = answerLayout;
                 question.modifiedDate = new Date();
+                question.maxLength = maxLength * 60;
                 returnObj = question;
                 returnObj.questionId = questionId;
                 questionRes.update(JSON.stringify(question), RECORD_TYPES.QUESTION);
@@ -295,6 +297,7 @@ function saveQuestion(page, params){
                 title: questionTitle,
                 type: questionType,
                 body: questionBody,
+                maxLength: maxLength * 60,
                 answerLayout: answerLayout,
                 modifiedDate: new Date(),
                 createdDate: new Date(),
@@ -380,7 +383,8 @@ function findQuestionBySurvey(page, surveyId){
             'questionId',
             'title',
             'type',
-            'answerLayout'
+            'answerLayout',
+            'maxLength'
         ],
         'size': 1000,
         'aggs': {
@@ -482,6 +486,7 @@ function clearResult(page, params){
     };
     if (userId) {
         queryJson.query.bool.must.push({'term': {'userId': userId}});
+        queryJson2.query.bool.must.push({'term': {'userId': userId}});
     }
 
 
@@ -499,7 +504,7 @@ function clearResult(page, params){
     if (searchResult2.hits.totalHits > 0) {
         var hits = searchResult2.hits.hits;
         for(var i = 0; i< hits.length; i++){
-            log.info('hit item {}, id {}', hits[i], hits[i].id);
+            log.info('hit item  {}, id {}', hits[i], hits[i].id);
             var resultRes = db.child(hits[i].id);
             if(resultRes) resultRes.delete();
         }
