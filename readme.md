@@ -1,5 +1,5 @@
-# ksurvey
-A custom survey app for Kademi platform
+# Kademi Video Survey
+A custom video survey (video interview) app for Kademi platform
 
 ### License
 [Apache License](https://github.com/anhnt/ksurvey/blob/master/LICENSE)
