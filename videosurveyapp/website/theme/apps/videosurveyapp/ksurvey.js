@@ -51,7 +51,7 @@ function checkSubmitButton() {
     if (done) {
         $('#btn-submit-survey').removeClass('hide');
         $('.submit-alert').removeClass('hide');
-        $('#questions').find('#question-pagination').addClass('hide');
+        $('#questions').find('#question-navigation').addClass('hide');
     }
 }
 
@@ -89,8 +89,10 @@ function initVideoRecorder(maxLength) {
         // the blob object contains the recorded data that
         // can be downloaded by the user, stored on server etc.
         console.log('finished recording: ', playerRecorder.recordedData);
-
+        $('#modal-recorder').find('.btn-submit-video').prop('disabled', false);
     });
+
+    playerRecorder.recorder.getDevice();
 }
 
 function initVideoQuestion() {
@@ -100,12 +102,16 @@ function initVideoQuestion() {
         if (!playerRecorder) {
             initVideoRecorder(maxLength);
         }
-        $('#modal-recorder').attr('data-questionId', $(this).attr('data-questionId')).modal();
+        $('#modal-recorder').attr('data-questionId', $(this).attr('data-questionId')).modal({
+            backdrop: 'static',
+            keyboard: false
+        });
     });
 
     $('#modal-recorder').on('hidden.bs.modal', function (e) {
         playerRecorder.recorder.destroy();
         playerRecorder = null;
+        $('#modal-recorder').find('.btn-submit-video').prop('disabled', true);
         $('#modal-recorder .modal-body').html('<video id="myVideo" class="video-js vjs-default-skin"></video>');
     });
 
@@ -114,6 +120,7 @@ function initVideoQuestion() {
         var modal = $('#modal-recorder');
         var questionId = modal.attr('data-questionId');
         if (playerRecorder && playerRecorder.recordedData) {
+            var loader = modal.find('.uploading-video').removeClass('hide');
             var formData = new FormData();
             formData.append(questionId, playerRecorder.recordedData.video);
             formData.append('questionId', questionId);
@@ -121,7 +128,7 @@ function initVideoQuestion() {
             formData.append('userId', $('input[name=temp-user]').val());
             $.ajax({
                 type: 'POST',
-                url: '/videosurvey/submitAnswer/',
+                url: '/vidsurvey/submitAnswer/',
                 data: formData,
                 processData: false,
                 contentType: false
@@ -131,14 +138,21 @@ function initVideoQuestion() {
                         whenComplete: function () {
                             initGotoCurrentQuestion();
                             checkSubmitButton();
+                            loader.addClass('hide');
                         }
                     })
                     modal.modal('hide');
                     Msg.success('Your answer has been submitted');
+                } else {
+                    Msg.success('Could not submit your answer');
+                    loader.addClass('hide');
+                    modal.modal('hide');
+                    initGotoCurrentQuestion();
+                    checkSubmitButton();
                 }
             });
         } else {
-            alert('Could not submit your answer');
+            Msg.success('Could not submit your answer');
         }
     });
 }

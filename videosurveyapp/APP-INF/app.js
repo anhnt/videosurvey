@@ -7,7 +7,7 @@ controllerMappings
 
 controllerMappings
     .adminController()
-    .path('/videosurvey/')
+    .path('/vidsurvey/')
     .enabled(true)
     .defaultView(views.templateView('videosurveyapp/manageSurveys.html'))
     .addMethod('GET', 'getSurveys')
@@ -18,14 +18,14 @@ controllerMappings
 
 controllerMappings
     .adminController()
-    .path('/videosurvey')
+    .path('/vidsurvey')
     .enabled(true)
     .addMethod("GET", "checkRedirect")
     .build();
 
 controllerMappings
     .adminController()
-    .path('/videosurvey/(?<surveyId>[^/]*)/')
+    .path('/vidsurvey/(?<surveyId>[^/]*)/')
     .enabled(true)
     .addPathResolver('surveyId', 'findSurvey')
     .defaultView(views.templateView('videosurveyapp/surveyDetail.html'))
@@ -36,21 +36,21 @@ controllerMappings
 
 controllerMappings
     .adminController()
-    .path('/videosurvey/(?<surveyId>[^/]*)')
+    .path('/vidsurvey/(?<surveyId>[^/]*)')
     .enabled(true)
     .addMethod("GET", "checkRedirect")
     .build();
 
 controllerMappings
     .adminController()
-    .path('/videosurvey/saveGroupAccess/')
+    .path('/vidsurvey/saveGroupAccess/')
     .enabled(true)
     .addMethod('POST', 'saveGroupAccess')
     .build();
 
 controllerMappings
     .adminController()
-    .path('/videosurvey/answer/')
+    .path('/vidsurvey/answer/')
     .enabled(true)
     .addMethod('GET','deleteAnswer', 'deleteAnswer')
     .addMethod('GET','getPlainAnswers', 'getPlainAnswers')
@@ -59,14 +59,14 @@ controllerMappings
 
 controllerMappings
     .adminController()
-    .path('/videosurvey/clearResult/')
+    .path('/vidsurvey/clearResult/')
     .enabled(true)
     .addMethod('POST','clearResult')
     .build();
 
 controllerMappings
     .adminController()
-    .path('/videosurvey/question/')
+    .path('/vidsurvey/question/')
     .enabled(true)
     .addMethod('GET','getQuestion','getQuestion')
     .addMethod('GET','deleteQuestion','deleteQuestion')
@@ -75,7 +75,7 @@ controllerMappings
 
 controllerMappings
     .adminController()
-    .path('/videosurvey/viewFile/')
+    .path('/vidsurvey/viewFile/')
     .enabled(true)
     .addMethod('GET','viewFile')
     .build();
@@ -83,7 +83,7 @@ controllerMappings
 // website controllers
 controllerMappings
     .websiteController()
-    .path('/videosurvey/')
+    .path('/vidsurvey/')
     .enabled(true)
     .defaultView(views.templateView('videosurveyapp/manageSurveys.html'))
     .addMethod('GET', 'getSurveys')
@@ -91,14 +91,14 @@ controllerMappings
 
 controllerMappings
     .websiteController()
-    .path('/videosurvey')
+    .path('/vidsurvey')
     .enabled(true)
     .addMethod("GET", "checkRedirect")
     .build();
 
 controllerMappings
     .websiteController()
-    .path('/videosurvey/(?<surveyId>[^/]*)/')
+    .path('/vidsurvey/(?<surveyId>[^/]*)/')
     .enabled(true)
     .postPriviledge("READ_CONTENT")
     .addPathResolver('surveyId', 'findSurvey')
@@ -110,14 +110,14 @@ controllerMappings
 
 controllerMappings
     .websiteController()
-    .path('/videosurvey/(?<surveyId>[^/]*)')
+    .path('/vidsurvey/(?<surveyId>[^/]*)')
     .enabled(true)
     .addMethod("GET", "checkRedirect")
     .build();
 
 controllerMappings
     .websiteController()
-    .path('/videosurvey/(?<surveyId>[^/]*)/result/')
+    .path('/vidsurvey/(?<surveyId>[^/]*)/result/')
     .enabled(true)
     .addPathResolver('surveyId', 'findSurvey')
     .defaultView(views.templateView('videosurveyapp/surveyResult.html'))
@@ -127,14 +127,14 @@ controllerMappings
 
 controllerMappings
     .websiteController()
-    .path('/videosurvey/(?<surveyId>[^/]*)/result')
+    .path('/vidsurvey/(?<surveyId>[^/]*)/result')
     .enabled(true)
     .addMethod("GET", "checkRedirect")
     .build();
 
 controllerMappings
     .websiteController()
-    .path('/videosurvey/submitSurvey/')
+    .path('/vidsurvey/submitSurvey/')
     .enabled(true)
     .postPriviledge("READ_CONTENT")
     .addMethod("POST", "submitSurveyOnly")
@@ -142,11 +142,11 @@ controllerMappings
 
 controllerMappings
     .websiteController()
-    .path('/videosurvey/submitAnswer/')
+    .path('/vidsurvey/submitAnswer/')
     .enabled(true)
-        .postPriviledge("READ_CONTENT")
-        .addMethod("POST", "submitAnswer")
-        .build();
+    .postPriviledge("READ_CONTENT")
+    .addMethod("POST", "submitAnswer")
+    .build();
 
 function initApp(orgRoot, webRoot, enabled){
     log.info("initApp: orgRoot={}", orgRoot);

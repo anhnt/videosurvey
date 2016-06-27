@@ -7,6 +7,7 @@
         <script type="text/javascript" src="/static/uri/1.15.1/URI.js">//</script>
         <script src="/static/moment/2.4.0/moment-2.4.0.js">//</script>
         <script src="/theme/apps/videosurveyapp/countdown.min.js">//</script>
+        
         <link href="//vjs.zencdn.net/5.8.7/video-js.css" rel="stylesheet">
         <link href="/theme/apps/videosurveyapp/videojs-record/css/videojs.record.css" rel="stylesheet">
         <style type="text/css">
@@ -19,6 +20,15 @@
             #myVideo{
                 background-color: #E8E884;
                 display: inline-block;
+            }
+            .uploading-video{
+                position: absolute;
+                padding-top: 40%;
+                text-align: center;
+                width: 100%;
+                height: 100%;
+                z-index: 999999;
+                background: rgba(255,255,255,0.8);
             }
         </style>
         #end
@@ -45,7 +55,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="alert alert-danger">
-                        <h3><strong>Oops!</strong> You don't have permission to access this survey. <a href="/videosurvey">Click here</a> to go back to survey list!</h3>
+                        <h3><strong>Oops!</strong> You don't have permission to access this survey. <a href="/vidsurvey">Click here</a> to go back to survey list!</h3>
                     </div>
                 </div>
             </div>
@@ -53,7 +63,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="alert alert-info">
-                        <h3><strong>Thank you!</strong> You've just done this survey. <a href="/videosurvey">Click here to go back to survey list</a>!</h3>
+                        <h3><strong>Thank you!</strong> You've just done this survey. <a href="/vidsurvey">Click here to go back to survey list</a>!</h3>
                     </div>
                 </div>
             </div>
@@ -61,7 +71,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="alert alert-danger">
-                        <h3><strong>Oops!</strong> This survey is currently disabled by administrator. <a href="/videosurvey">Click here</a> to go back to survey list!</h3>
+                        <h3><strong>Oops!</strong> This survey is currently disabled by administrator. <a href="/vidsurvey">Click here</a> to go back to survey list!</h3>
                     </div>
                 </div>
             </div>
@@ -69,7 +79,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="alert alert-danger">
-                        <h3><strong>Oops!</strong> This survey has expired. <a href="/videosurvey">Click here</a> to go back to survey list!</h3>
+                        <h3><strong>Oops!</strong> This survey has expired. <a href="/vidsurvey">Click here</a> to go back to survey list!</h3>
                     </div>
                 </div>
             </div>
@@ -95,7 +105,7 @@
                     #set($questions = $page.attributes.questionResult.hits.hits)
                     #set($answers = $page.attributes.answerResult.hits.hits)
                     #if($page.attributes.questionResult.hits.totalHits > 0)
-                        <form id="surveyform" data-survey="$survey.name" action="/videosurvey/submitSurvey/" method="post">
+                        <form id="surveyform" data-survey="$survey.name" action="/vidsurvey/submitSurvey/" method="post">
                             <input type="hidden" name="temp-surveyId" value="$survey.name">
                             <input type="hidden" name="temp-user" value="$user.name">
                             <input type="hidden" name="temp-userAgentHeader" value="$request.userAgentHeader">
@@ -189,6 +199,13 @@
 
         <div id="modal-recorder" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog">
+                <div class="uploading-video hide">
+                    <span style="font-size: 20px">Your answer is being uploaded. </span>
+                    <br>
+                    <span>This will take some time to complete...</span>
+                    <br>
+                    <i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+                </div>
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -199,7 +216,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary btn-submit-video">Submit</button>
+                        <button type="button" disabled class="btn btn-primary btn-submit-video">Submit</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->

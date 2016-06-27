@@ -7,8 +7,8 @@
     <source>/APP-INF/fileManager.js</source>
     <source>/APP-INF/adminSurveyManager.js</source>
     <source>/APP-INF/websiteSurveyApp.js</source>
-    <menu parentId="menuRoot" id="menuManageVideoSurvey" text="Video Survey" css="fa fa-video-camera" path="/videosurvey" ordering="90"/>
-    <menu type="website" parentId="menuRoot" id="menuVideoSurveyApp" text="Video Survey" path="/videosurvey" ordering="90"/>
+    <menu parentId="menuRoot" id="menuManageVideoSurvey" text="Video Survey" css="fa fa-video-camera" path="/vidsurvey" ordering="90"/>
+    <menu type="website" parentId="menuRoot" id="menuVideoSurveyApp" text="Video Survey" path="/vidsurvey" ordering="90"/>
     <role class="role">
         <name>Video Survey</name>
         <privNames>

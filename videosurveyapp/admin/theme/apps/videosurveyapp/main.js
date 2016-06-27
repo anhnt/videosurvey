@@ -44,7 +44,7 @@ $(function(){
         var questionId = $(this).parents('.panel').attr('data-questionId');
         openFuseModal(modalQuestion);
         $.ajax({
-            url: '/videosurvey/question/',
+            url: '/vidsurvey/question/',
             type: 'get',
             data: {questionId: questionId, getQuestion:'getQuestion'},
             dataType: 'json',   
@@ -85,7 +85,7 @@ $(function(){
         var c = confirm('Are you sure to delete this question?');
         if(c){
             $.ajax({
-                url: '/videosurvey/question/',
+                url: '/vidsurvey/question/',
                 type: 'get',
                 data: {questionId: questionId, deleteQuestion:'deleteQuestion'},
                 dataType: 'json',
@@ -147,7 +147,7 @@ $(function(){
         var c = confirm('Are you sure to delete this survey?');
         if(c){
             $.ajax({
-                url: '/videosurvey/',
+                url: '/vidsurvey/',
                 type: 'post',
                 data: {surveyId: surveyId, deleteSurvey:'deleteSurvey'},
                 dataType: 'json',
@@ -182,7 +182,7 @@ $(function(){
     		form.find('[name=answerBody]').attr('readonly','readonly').val('');    
 		}
         $.ajax({
-            url: '/videosurvey/answer/',
+            url: '/vidsurvey/answer/',
             type: 'post',
             data: data,
             dataType: 'json',
@@ -220,7 +220,7 @@ $(function(){
 	    var c = confirm('Are you sure to delete this answer?');
 	    if(c){
 	        $.ajax({
-                url: '/videosurvey/answer/',
+                url: '/vidsurvey/answer/',
                 type: 'get',
                 data: {answerId: answerId, deleteAnswer: 'deleteAnswer'},
                 dataType: 'json',
@@ -272,7 +272,7 @@ $(function(){
         var questionId = form.find('[name=questionId]').val();
         
         $.ajax({
-            url: '/videosurvey/question/',
+            url: '/vidsurvey/question/',
             type: 'post',
             data: data,
             dataType: 'json',
@@ -347,7 +347,7 @@ $(function(){
             var name = input.attr('name');
             var surveyId = input.parents('.modal-body').attr('data-surveyId');
             $.ajax({
-                url: '/videosurvey/saveGroupAccess/',
+                url: '/vidsurvey/saveGroupAccess/',
                 data: {
                     group: name,
                     isAdd: isChecked,
@@ -524,7 +524,7 @@ $(function(){
             userId = '';
         }
         $.ajax({
-            url: '/videosurvey/clearResult/',
+            url: '/vidsurvey/clearResult/',
             type: 'post',
             data: {userId: userId, surveyId: surveyId},
             success: function(resp){
@@ -550,14 +550,20 @@ $(function(){
 
             var hash = $(this).attr('data-hash');
             var type = $(this).attr('data-type');
-            var url = encodeURI('/videosurvey/viewFile/?hash='+hash+'&type='+type);
-            buildJWVideoPlayerPreview(url);
+            var url = encodeURI('/vidsurvey/viewFile/?hash='+hash+'&type='+type);
+            buildPlayer(url);
             $('#modal-preview-video').modal();
         });
-        $.getScriptOnce('/static/jwplayer/6.10/jwplayer.js', function () {
-            jwplayer.key = 'cXefLoB9RQlBo/XvVncatU90OaeJMXMOY/lamKrzOi0=';
-            buildJWVideoPlayerPreview('');
-        });
+        // $.getScriptOnce('/static/jwplayer/6.10/jwplayer.js', function () {
+        //     jwplayer.key = 'cXefLoB9RQlBo/XvVncatU90OaeJMXMOY/lamKrzOi0=';
+        //     buildJWVideoPlayerPreview('');
+        // });
+    }
+    
+    function buildPlayer(src){
+        var vid = document.getElementById('answer-preview');
+        vid.src = src;
+        vid.load();
     }
 
     function buildJWVideoPlayerPreview(src) {

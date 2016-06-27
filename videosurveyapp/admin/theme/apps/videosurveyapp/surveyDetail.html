@@ -1,12 +1,12 @@
 <html>
     <head>
-        <link rel="stylesheet" href="/theme/apps/videosurveyapp/main.css">
+        <link rel="stylesheet" href="/theme/apps/videosurveyapp/main.css?v=1">
         <link rel="stylesheet" href="/theme/apps/videosurveyapp/morris.css">
         <script src="/theme/apps/videosurveyapp/raphael-min.js">//</script>
         <script src="/theme/apps/videosurveyapp/morris.min.js">//</script>
         <script src="/static/d3/d3.v3.js">//</script>
         <script src="/static/nvd3/nv.d3.js">//</script>
-        <script src="/theme/apps/videosurveyapp/main.js">//</script>
+        <script src="/theme/apps/videosurveyapp/main.js?v=1">//</script>
     </head>
     <body>
         #set($survey = $page.attributes.survey)
@@ -29,7 +29,7 @@
                         #foreach($w in $wm.websites)
                             #if ($survey.jsonObject.websites.contains($w.name))
                             #set($hasWebsite = true)
-                            #set ($url = "http://${wm.websiteAddress($w)}${formatter.portString}/videosurvey/$survey.name")
+                            #set ($url = "http://${wm.websiteAddress($w)}${formatter.portString}/vidsurvey/$survey.name")
                             <li><a target="_blank" href="$url"><i class="fa fa-link"></i> $w.name</a></li>
                             #end
                         #end
@@ -79,7 +79,8 @@
                                 <div class="checkbox">
                                     <label>
                                         <input #if ($survey.jsonObject.websites.contains($w.name)) checked #end onclick="if(this.checked) document.getElementById('temp-websites').value = this.value" type="checkbox" name="websites" value="$w.name" />
-                                        <a href="http://${wm.websiteAddress($w)}${formatter.portString}" target="_blank">$w.name</a>
+                                        $w.name
+                                        <a href="http://${wm.websiteAddress($w)}${formatter.portString}" target="_blank">http://${wm.websiteAddress($w)}${formatter.portString} <i class="fa fa-external-link"></i></a>
                                     </label>
                                 </div>
                                 #end
