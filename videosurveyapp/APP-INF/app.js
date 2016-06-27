@@ -144,9 +144,9 @@ controllerMappings
     .websiteController()
     .path('/videosurvey/submitAnswer/')
     .enabled(true)
-    .postPriviledge("READ_CONTENT")
-    .addMethod("POST", "submitAnswer")
-    .build();
+        .postPriviledge("READ_CONTENT")
+        .addMethod("POST", "submitAnswer")
+        .build();
 
 function initApp(orgRoot, webRoot, enabled){
     log.info("initApp: orgRoot={}", orgRoot);
