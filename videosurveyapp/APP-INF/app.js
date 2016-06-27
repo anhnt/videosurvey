@@ -14,6 +14,7 @@ controllerMappings
     .addMethod('POST', 'saveSurvey', 'saveSurvey')
     .addMethod('POST', 'deleteSurvey', 'deleteSurvey')
     .addMethod('POST', 'clearSurveyResult', 'clearSurveyResult')
+    .addMethod('POST', 'sendEmail', 'sendEmail')
     .build();
 
 controllerMappings

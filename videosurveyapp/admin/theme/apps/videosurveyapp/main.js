@@ -595,6 +595,16 @@ $(function(){
         });
     }
 
+    function initSendEmail(){
+        $('#survey-sendEmail').forms({
+            onSuccess: function(resp){
+                if (resp && resp.status) {
+                    Msg.success('Email has been sent');
+                }
+            }
+        })
+    }
+
     initGroupModal();
     initDateRange();
     initProgressBar();
@@ -604,4 +614,5 @@ $(function(){
     if($('#surveyManager').length){
         initVideoPreview();
     }
+    initSendEmail();
 });

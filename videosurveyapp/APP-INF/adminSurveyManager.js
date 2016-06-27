@@ -726,3 +726,51 @@ function viewFile(page, params){
         return views.fileView(hash, type);
     }
 }
+
+function sendEmail(page, params){
+    log.info('send email {}', params.sendEmail);
+
+    var email = params.surveyEmail;
+    var surveyId = params.surveyId;
+    var surveyWebsites = params.surveyWebsites;
+
+    if (isBlank(email) || isBlank(surveyId) || isBlank(surveyWebsites)){
+        return views.jsonObjectView(JSON.stringify({status: false}));
+    }
+
+    var rootFolder = page.find('/');
+    var orgData = rootFolder.orgData;
+
+    email = safeString(email).toLowerCase()
+    var groupname = 'VidSurveys';
+    var userRes = applications.userApp.findUserResource(email);
+
+
+    if(userRes === null || typeof userRes === 'undefined') {
+        try {
+            var membershipBean = orgData.createMembership(null, email, orgData, groupname);
+            var profileBean = membershipBean.profile();
+            userRes = applications.userApp.findUserResource(profileBean);
+        } catch (e) {
+            log.error(e);
+        }
+    }
+    var profile = userRes.thisProfile;
+
+    var wm = page.find('/websites');
+    var href = '#';
+    for(var i in wm.websites){
+        if (surveyWebsites.indexOf(wm.websites[i].name) !== -1){
+            href = wm.websiteAddress(wm.websites[i]);
+            break;
+        }
+    }
+    applications.email.emailBuilder()
+        .recipient(profile)
+        .fromAddress('anh@kademi.co')
+        .subject('Kademi video survey')
+        .html('Hello there, <br> Please check out this <a href="https://'+href+'/vidsurvey/'+surveyId+'/?@{login}">survey</a>')
+        .build();
+
+    return views.jsonObjectView(JSON.stringify({status: true}));
+}

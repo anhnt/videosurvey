@@ -17,7 +17,7 @@
                     <li role="presentation"><a href="#questions" aria-controls="questions" role="tab" data-toggle="tab"><i class="fa fa-list"></i> Questions</a></li>
                     <li class="" role="presentation"><a href="#groups" aria-controls="groups" role="tab" data-toggle="tab"><i class="fa fa-users"></i> Group Access</a></li>
                     <li role="presentation"><a href="#statistic" aria-controls="statistic" role="tab" data-toggle="tab"><i class="fa fa-area-chart"></i> Statistic</a></li>
-                    <li class="hide" role="presentation"><a href="#history" aria-controls="history" role="tab" data-toggle="tab"><i class="fa fa-clock-o"></i> History</a></li>
+                    <li role="presentation"><a href="#sendEmail" aria-controls="sendEmail" role="tab" data-toggle="tab"><i class="fa fa-envelope"></i> Send</a></li>
                 </ul>
                 <div id="preview-area" class="btn-group pull-right">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -356,8 +356,29 @@
 
                 </div>
 
-                <div role="tabpanel" class="tab-pane hide" id="history">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut iure, repellat impedit eos sint at libero aliquid tempora velit recusandae! Debitis iure soluta suscipit a magnam modi fuga! Consectetur, non.
+                <div role="tabpanel" class="tab-pane" id="sendEmail">
+                    <form class="form-horizontal" action="/vidsurvey/" id="survey-sendEmail">
+                        <input type="hidden" name="surveyId" value="$survey.name" />
+                        <input type="hidden" name="surveyWebsites" value="$survey.websites" />
+                        <input type="hidden" name="sendEmail" value="sendEmail" />
+                        <div class="form-group">
+                            <div class="col-md-10 col-md-offset-2">
+                                <p>To send this survey to someone, please enter their email address here. We will try to find current kademi profiles if available, or create a new profile and send. Make sure you created a group named <strong>VidSurveys</strong> with Video Survey role and allow users from this group access to website before send email. To create group, please click
+                                    <a href="/groups">here</a></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Email</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control required email" name="surveyEmail" required="required" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-primary" type="submit">Send</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
