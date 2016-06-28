@@ -122,7 +122,14 @@ function initVideoQuestion() {
         if (playerRecorder && playerRecorder.recordedData) {
             var loader = modal.find('.uploading-video').removeClass('hide');
             var formData = new FormData();
-            formData.append(questionId, playerRecorder.recordedData.video);
+            if (playerRecorder.recordedData.video) {
+                // chrome uses this
+                formData.append(questionId, playerRecorder.recordedData.video);
+            } else {
+                // otherwise firefox does
+                formData.append(questionId, playerRecorder.recordedData);
+            }
+
             formData.append('questionId', questionId);
             formData.append('surveyId', $('input[name=temp-surveyId]').val());
             formData.append('userId', $('input[name=temp-user]').val());
