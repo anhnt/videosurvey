@@ -754,22 +754,32 @@ function sendEmail(page, params){
         } catch (e) {
             log.error(e);
         }
+    } else {
+        // need to create membership for current user if not existed
+        orgData.createMembership(userRes.userId, userRes.email, orgData, groupname);
     }
     var profile = userRes.thisProfile;
 
     var wm = page.find('/websites');
     var href = '#';
+    var websitename;
     for(var i in wm.websites){
         if (surveyWebsites.indexOf(wm.websites[i].name) !== -1){
-            href = wm.websiteAddress(wm.websites[i]);
+            href = formatter.getDomainName(wm.websites[i]);
+            websitename = wm.websites[i].name;
             break;
         }
+    }
+
+    var loginToken = '';
+    if (websitename) {
+        loginToken = page.find('/websites/'+websitename).current.getLoginToken(profile);
     }
     applications.email.emailBuilder()
         .recipient(profile)
         .fromAddress('anh@kademi.co')
         .subject('Kademi video survey')
-        .html('Hello there, <br> Please check out this <a href="https://'+href+'/vidsurvey/'+surveyId+'/?@{login}">survey</a>')
+        .html('Hello there, <br> Please check out this <a href="https://'+href+'/vidsurvey/'+surveyId+'/?'+loginToken+'">survey</a>')
         .build();
 
     return views.jsonObjectView(JSON.stringify({status: true}));
